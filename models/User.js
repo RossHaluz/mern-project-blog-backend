@@ -14,11 +14,11 @@ const authSchema = new Schema({
         type: String,
         require: true
     },
-    posts: {
+    posts: [{
         type: Schema.Types.ObjectId,
         ref: 'Post'
-    }
-})
+    }]
+}, {timestamps: true})
 
 const authModel = model('User', authSchema)
 

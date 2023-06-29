@@ -7,8 +7,8 @@ const jwt = require('jsonwebtoken')
 const register = async (req, res) => {
 const {username, password} = req.body;
 const user = await authModel.findOne({username});
-if(user){
-    throw HttpError(400, 'Данний користувач уже зареєстрований')
+if(user !== null){
+throw HttpError(409, 'Данний користувач уже зареєстрований')
 }
 const hashPassword = await bcrypt.hash(password, 10);
 const createUser = await authModel.create({
@@ -21,14 +21,19 @@ const payload = {
 const token = await jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '24h'})
 const newUser = await authModel.findByIdAndUpdate(createUser._id, {token}, {new: true})
 
-return res.json(newUser)
+return res.json({
+    message: 'Користувач успішно зареєстрований',
+    newUser
+})
 }
 
 const login = async (req, res) => {
 const {username, password} = req.body;
 const user = await authModel.findOne({username});
 if(!user){
-    throw HttpError(400, "Користувача не знайдено")
+    res.status(400).json({
+        message: "Користувача не знайдено"
+    })
 }
 const isMatch = bcrypt.compare(password, user.password)
 if(!isMatch){
@@ -40,10 +45,32 @@ const payload = {
 const token = await jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '24h'})
 await authModel.findByIdAndUpdate(user._id, {token}, {new: true})
 
-res.json(user)
+res.json({
+    user,
+    message: "Ви успішно зайшли"
+})
 }
 
+const getCurrentUser = async (req, res) => {
+    const {id} = req.userId;
+    const user = await authModel.findById(id)
+
+    res.json(user)
+}
+
+const logout = async (req, res) => {
+const {id} = req.userId;
+
+    await authModel.findByIdAndUpdate(id, {token: ''})
+
+    res.json({
+        message: "Ви успішно вийшли"
+    })
+}
+ 
 module.exports = {
 register: ctrlWrapper(register),
-login: ctrlWrapper(login)
+login: ctrlWrapper(login),
+getCurrentUser: ctrlWrapper(getCurrentUser),
+logout: ctrlWrapper(logout)
 }

@@ -14,7 +14,7 @@ jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
     if(err){
         next(HttpError(401, "Не авторизований"))
     }
-    req,userId = decoded
+    req.userId = decoded
 
     next()
 })

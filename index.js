@@ -3,19 +3,24 @@ const cors = require("cors");
 const mongoose = require('mongoose');
 const dotenv = require("dotenv");
 dotenv.config();
+// const fileUpload = require('express-fileupload')
+const path = require('path')
 
 const {DB_HOST, PORT} = process.env;
 const authRoute = require('./routes/auth');
-const { HttpError } = require("./hellpers/HttpError");
+const postsRoute = require('./routes/posts');
 
 const app = express();
 
 //Modellware
 app.use(cors());
 app.use(express.json());
+// app.use(fileUpload())
+app.use(express.static('upload'))
 
 //Routes 
 app.use('/api/auth', authRoute);
+app.use('/api/posts', postsRoute);
 
 mongoose.connect(DB_HOST).then((res) => {
     console.log(`Server work on ${PORT} port`);
