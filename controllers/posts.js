@@ -8,12 +8,10 @@ const crypto = require('crypto');
 const uploadDir = path.join(__dirname, "..", "upload");
 
 const createNewPost = async (req, res) => {
-    console.log(req.file);
 const {id} = req.userId;
-const user = await authModel.findById(id);
 const {title, text} = req.body;
+const user = await authModel.findById(id);
 if(req.file){
-    console.log(reg.file);
     const {path: tempUpload, originalname} = req.file;
     const filename  = `${crypto.randomUUID()}_${originalname}`
     const resultUpload = path.join(uploadDir, filename)

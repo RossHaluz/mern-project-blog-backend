@@ -3,8 +3,6 @@ const cors = require("cors");
 const mongoose = require('mongoose');
 const dotenv = require("dotenv");
 dotenv.config();
-// const fileUpload = require('express-fileupload')
-const path = require('path')
 
 const {DB_HOST, PORT} = process.env;
 const authRoute = require('./routes/auth');
@@ -15,7 +13,6 @@ const app = express();
 //Modellware
 app.use(cors());
 app.use(express.json());
-// app.use(fileUpload())
 app.use(express.static('upload'))
 
 //Routes 
