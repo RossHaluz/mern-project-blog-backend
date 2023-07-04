@@ -82,9 +82,60 @@ const list = await Promise.all(
 res.json(list)
 }
 
+const delatePost  = async (req, res) => {
+    const {id: postId} = req.params;
+    const {id} = req.userId
+
+const delateBook = await PostModel.findByIdAndDelete(postId)
+if(!delateBook){
+throw HttpError(404, "Такого поста не знайдено")
+}
+await authModel.findByIdAndUpdate(id, {
+    $pull: {posts: postId}
+})
+
+res.json({
+    message: "Пост успішно видалений"
+})
+}
+
+const updatePost = async (req, res) => {
+const {id} = req.params;
+const {text, title} = req.body;
+const post = await PostModel.findById(id);
+
+if(!post) {
+    console.log("Upsss not found");
+    throw HttpError(404, "Пост не знайдено")
+}
+
+if(req.file) {
+    const {path: tempUpload, originalname} = req.file;
+    const filename  = `${crypto.randomUUID()}_${originalname}`
+    const resultUpload = path.join(uploadDir, filename)
+    await fs.rename(tempUpload, resultUpload)
+    const updateWithImage = await PostModel.findByIdAndUpdate(id, {
+        text,
+        title,
+        imgUrl: filename
+    }, {new: true})
+
+    return res.json(updateWithImage)
+}
+
+const updateWithoutImg = await PostModel.findByIdAndUpdate(id, {
+    title,
+    text,
+}, {new: true})
+
+res.json(updateWithoutImg)
+}
+
 module.exports = {
     createNewPost: ctrlWrapper(createNewPost),
     getAllPosts: ctrlWrapper(getAllPosts),
     getPost: ctrlWrapper(getPost),
-    getPostsUser: ctrlWrapper(getPostsUser)
+    getPostsUser: ctrlWrapper(getPostsUser),
+    delatePost: ctrlWrapper(delatePost),
+    updatePost: ctrlWrapper(updatePost)
 }

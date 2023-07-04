@@ -7,7 +7,7 @@ const PostSchema = new Schema({
     imgUrl: {type: String, default: ''},
     views: {type: Number, default: 0},
     author: {type: Schema.Types.ObjectId, ref: 'User'},
-    comments: {type: Schema.Types.ObjectId, ref: 'Comment'}
+    comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
 }, {timestamps: true});
 
 const PostModel = model('Post', PostSchema);

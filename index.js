@@ -7,6 +7,7 @@ dotenv.config();
 const {DB_HOST, PORT} = process.env;
 const authRoute = require('./routes/auth');
 const postsRoute = require('./routes/posts');
+const commentsRoute = require('./routes/comment');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.static('upload'))
 //Routes 
 app.use('/api/auth', authRoute);
 app.use('/api/posts', postsRoute);
+app.use('/api/comments', commentsRoute)
 
 mongoose.connect(DB_HOST).then((res) => {
     console.log(`Server work on ${PORT} port`);
