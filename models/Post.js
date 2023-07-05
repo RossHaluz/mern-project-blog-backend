@@ -6,6 +6,11 @@ const PostSchema = new Schema({
     text: {type: String, require: true},
     imgUrl: {type: String, default: ''},
     views: {type: Number, default: 0},
+    favorites: {
+        type: [Schema.Types.ObjectId],
+        default: [],
+        ref: "User",
+    },
     author: {type: Schema.Types.ObjectId, ref: 'User'},
     comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
 }, {timestamps: true});

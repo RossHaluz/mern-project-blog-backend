@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs').promises;
 const crypto = require('crypto');
 const { HttpError } = require("../hellpers/HttpError");
+const { post } = require("../routes/posts");
 
 const uploadDir = path.join(__dirname, "..", "upload");
 
@@ -131,11 +132,45 @@ const updateWithoutImg = await PostModel.findByIdAndUpdate(id, {
 res.json(updateWithoutImg)
 }
 
+const setFavoritePost = async (req, res) => {
+    const {id} = req.userId;
+    const {postId} = req.params;
+
+    const post = await PostModel.findOne({favorites: id, _id: postId});
+    if(post){
+        throw HttpError(409, "Пост вже доданий до збережениз")
+    }
+    const updatePost = await PostModel.findByIdAndUpdate(postId, {
+        _id: postId,
+        $push: {favorites: id}
+    }, {new: true})
+
+    if(!updatePost){
+        throw HttpError(400, "Щось пішло не так...")
+    }
+    
+    res.json(updatePost)
+}
+
+const getFaviritePosts = async (req, res) => {
+    console.log('hello');
+const {id} = req.userId;
+console.log(id);
+const posts = await PostModel.find({favorites: id});
+if(!posts) {
+    throw HttpError(404, "Постів не знайдено")
+}
+
+res.json(posts)
+}
+
 module.exports = {
     createNewPost: ctrlWrapper(createNewPost),
     getAllPosts: ctrlWrapper(getAllPosts),
     getPost: ctrlWrapper(getPost),
     getPostsUser: ctrlWrapper(getPostsUser),
     delatePost: ctrlWrapper(delatePost),
-    updatePost: ctrlWrapper(updatePost)
+    updatePost: ctrlWrapper(updatePost),
+    setFavoritePost: ctrlWrapper(setFavoritePost),
+    getFaviritePosts: ctrlWrapper(getFaviritePosts)
 }
