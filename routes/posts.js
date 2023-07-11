@@ -1,10 +1,13 @@
-const { createNewPost, getAllPosts, getPost, getPostsUser, delatePost, updatePost, setFavoritePost, getFaviritePosts } = require('../controllers/posts');
+const { createNewPost, getAllPosts, getPost, getPostsUser, delatePost, updatePost, setFavoritePost, removeFavoritePost, getFaviritePosts } = require('../controllers/posts');
 const checkAuth = require('../midelware/checkAuth');
 const upload = require('../midelware/upload');
 const router = require('express').Router();
 
 //Get all posts
 router.get("/", getAllPosts)
+
+//Get favorite posts 
+router.get('/favorite', checkAuth, getFaviritePosts)
 
 //Get post
 router.get('/:id', getPost)
@@ -24,7 +27,7 @@ router.put('/:id', checkAuth, upload.single('image'), updatePost)
 //Add post to favorite
 router.post('/favorite/:postId', checkAuth,  setFavoritePost);
 
-//Get favorite posts 
-router.get('/favorite', checkAuth, getFaviritePosts)
+router.post('/favorite-remove/:postId', checkAuth, removeFavoritePost)
+
 
 module.exports = router;

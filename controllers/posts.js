@@ -153,15 +153,26 @@ const setFavoritePost = async (req, res) => {
 }
 
 const getFaviritePosts = async (req, res) => {
-    console.log('hello');
 const {id} = req.userId;
-console.log(id);
 const posts = await PostModel.find({favorites: id});
 if(!posts) {
     throw HttpError(404, "Постів не знайдено")
 }
 
 res.json(posts)
+}
+
+const removeFavoritePost = async (req, res) => {
+    const {id} = req.userId;
+    const {postId} = req.params;
+
+const removeFavorite = await PostModel.findByIdAndUpdate(postId, {
+        $pull: {favorites: id}
+    })
+res.json({
+    data: removeFavorite,
+    message: "Success remove from favorite"
+})
 }
 
 module.exports = {
@@ -172,5 +183,6 @@ module.exports = {
     delatePost: ctrlWrapper(delatePost),
     updatePost: ctrlWrapper(updatePost),
     setFavoritePost: ctrlWrapper(setFavoritePost),
-    getFaviritePosts: ctrlWrapper(getFaviritePosts)
+    getFaviritePosts: ctrlWrapper(getFaviritePosts),
+    removeFavoritePost: ctrlWrapper(removeFavoritePost)
 }
