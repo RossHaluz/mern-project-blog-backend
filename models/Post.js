@@ -11,6 +11,11 @@ const PostSchema = new Schema({
         default: [],
         ref: "User",
     },
+    category: {
+        type: String,
+        enum: ['JavaScript', "React.js", "Node.js", "MongoDB"],
+        require: true
+    },
     author: {type: Schema.Types.ObjectId, ref: 'User'},
     comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
 }, {timestamps: true});

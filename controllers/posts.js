@@ -11,7 +11,7 @@ const uploadDir = path.join(__dirname, "..", "upload");
 
 const createNewPost = async (req, res) => {
 const {id} = req.userId;
-const {title, text} = req.body;
+const {title, text, category} = req.body;
 const user = await authModel.findById(id);
 if(req.file){
     const {path: tempUpload, originalname} = req.file;
@@ -22,6 +22,7 @@ if(req.file){
     const uploadPostWithImage = await PostModel.create({
         username: user.username,
         imgUrl: filename,
+        category,
         title,
         text,
         author: id
@@ -35,6 +36,7 @@ if(req.file){
 
 const uploadPostWithoutImg = await PostModel.create({
     username: user.username,
+    category,
     title,
     text,
     imgUrl: '',

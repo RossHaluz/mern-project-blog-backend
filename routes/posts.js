@@ -27,6 +27,7 @@ router.put('/:id', checkAuth, upload.single('image'), updatePost)
 //Add post to favorite
 router.post('/favorite/:postId', checkAuth,  setFavoritePost);
 
+//Remove post from favorite
 router.post('/favorite-remove/:postId', checkAuth, removeFavoritePost)
 
 
