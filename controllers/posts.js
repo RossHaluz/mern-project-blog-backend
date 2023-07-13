@@ -63,7 +63,7 @@ const getAllPosts = async (__, res) => {
 }
 
 const getPost = async (req, res) => {
-const {id} = req.params
+const {id} = req.params;
 
 const post = await PostModel.findByIdAndUpdate(id, {
     $inc: {views: 1}

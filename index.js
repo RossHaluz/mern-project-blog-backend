@@ -17,8 +17,8 @@ app.use(express.json());
 app.use(express.static('upload'))
 
 //Routes 
-app.use('/api/auth', authRoute);
 app.use('/api/posts', postsRoute);
+app.use('/api/auth', authRoute);
 app.use('/api/comments', commentsRoute)
 
 mongoose.connect(DB_HOST).then((res) => {

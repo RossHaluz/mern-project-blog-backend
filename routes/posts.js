@@ -7,7 +7,7 @@ const router = require('express').Router();
 router.get("/", getAllPosts)
 
 //Get posts from category
-router.get('/:category', getCategoryPosts)
+router.get('/category/:category', getCategoryPosts)
 
 //Get favorite posts 
 router.get('/favorite', checkAuth, getFaviritePosts)
