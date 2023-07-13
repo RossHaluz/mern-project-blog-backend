@@ -1,10 +1,13 @@
-const { createNewPost, getAllPosts, getPost, getPostsUser, delatePost, updatePost, setFavoritePost, removeFavoritePost, getFaviritePosts } = require('../controllers/posts');
+const { createNewPost, getAllPosts, getPost, getPostsUser, delatePost, updatePost, setFavoritePost, removeFavoritePost, getFaviritePosts, getCategoryPosts } = require('../controllers/posts');
 const checkAuth = require('../midelware/checkAuth');
 const upload = require('../midelware/upload');
 const router = require('express').Router();
 
 //Get all posts
 router.get("/", getAllPosts)
+
+//Get posts from category
+router.get('/:category', getCategoryPosts)
 
 //Get favorite posts 
 router.get('/favorite', checkAuth, getFaviritePosts)

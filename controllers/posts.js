@@ -177,6 +177,16 @@ res.json({
 })
 }
 
+const getCategoryPosts = async (req, res) => {
+    const {category} = req.params;
+    const posts = await PostModel.find({category})
+    if(!posts) {
+        throw HttpError(404, "Постів не знайдено")
+    }
+    
+    res.json(posts)
+    }
+
 module.exports = {
     createNewPost: ctrlWrapper(createNewPost),
     getAllPosts: ctrlWrapper(getAllPosts),
@@ -186,5 +196,6 @@ module.exports = {
     updatePost: ctrlWrapper(updatePost),
     setFavoritePost: ctrlWrapper(setFavoritePost),
     getFaviritePosts: ctrlWrapper(getFaviritePosts),
-    removeFavoritePost: ctrlWrapper(removeFavoritePost)
+    removeFavoritePost: ctrlWrapper(removeFavoritePost),
+    getCategoryPosts: ctrlWrapper(getCategoryPosts)
 }

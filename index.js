@@ -8,7 +8,6 @@ const {DB_HOST, PORT} = process.env;
 const authRoute = require('./routes/auth');
 const postsRoute = require('./routes/posts');
 const commentsRoute = require('./routes/comment');
-const categoryRoute = require('./routes/category');
 
 const app = express();
 
@@ -21,7 +20,6 @@ app.use(express.static('upload'))
 app.use('/api/auth', authRoute);
 app.use('/api/posts', postsRoute);
 app.use('/api/comments', commentsRoute)
-app.use('/api/category', categoryRoute)
 
 mongoose.connect(DB_HOST).then((res) => {
     console.log(`Server work on ${PORT} port`);
