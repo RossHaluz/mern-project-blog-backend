@@ -205,6 +205,22 @@ const getCategoryPosts = async (req, res) => {
         res.json(filterPosts)
     }
 
+    const getSearchPosts = async (req, res) => {
+        const {query} = req.query;
+        if(!query) {
+            const posts = await PostModel.find();
+
+            return res.json(posts)
+        }
+
+        const serchPosts = await PostModel.find({title: query});
+        if(!serchPosts){
+            throw HttpError(404, "Постів не знайдено")
+        }
+
+        res.json(serchPosts)
+    }
+
 module.exports = {
     createNewPost: ctrlWrapper(createNewPost),
     getAllPosts: ctrlWrapper(getAllPosts),
@@ -216,5 +232,6 @@ module.exports = {
     getFaviritePosts: ctrlWrapper(getFaviritePosts),
     removeFavoritePost: ctrlWrapper(removeFavoritePost),
     getCategoryPosts: ctrlWrapper(getCategoryPosts),
-    getSearchCategory: ctrlWrapper(getSearchCategory)
+    getSearchCategory: ctrlWrapper(getSearchCategory),
+    getSearchPosts: ctrlWrapper(getSearchPosts)
 }
