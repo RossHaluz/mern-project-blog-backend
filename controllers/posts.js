@@ -213,12 +213,14 @@ const getCategoryPosts = async (req, res) => {
             return res.json(posts)
         }
 
-        const serchPosts = await PostModel.find({title: query});
-        if(!serchPosts){
+        const serchPosts = await PostModel.find();
+        const filterPosts = serchPosts.filter(item => item.title.toLowerCase().includes(query.toLowerCase()))
+
+        if(!filterPosts){
             throw HttpError(404, "Постів не знайдено")
         }
 
-        res.json(serchPosts)
+        res.json(filterPosts)
     }
 
 module.exports = {
