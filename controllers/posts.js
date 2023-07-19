@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs').promises;
 const crypto = require('crypto');
 const { HttpError } = require("../hellpers/HttpError");
-const { post } = require("../routes/posts");
+const pagination = require("../utils/pagination");
 
 const uploadDir = path.join(__dirname, "..", "upload");
 
@@ -49,8 +49,11 @@ await authModel.findByIdAndUpdate(id, {
 res.json(uploadPostWithoutImg)
 }
 
-const getAllPosts = async (__, res) => {
-    const posts = await PostModel.find().sort('-createdAt');
+const getAllPosts = async (req, res) => {
+    const {page: currentPage, limit: currentLimit} = req.query;
+    const {page, limit, skip} = pagination(currentPage, currentLimit)
+    const posts = await PostModel.find({}, "", {skip, limit}).sort('-createdAt');
+    const totalPosts = await PostModel.find().count();
     const popularPosts = await PostModel.find().limit(5).sort('-views');
     if(!posts) {
         throw HttpError(400, 'Постів не знайдено:(')
@@ -58,7 +61,12 @@ const getAllPosts = async (__, res) => {
 
     res.json({
         posts,
-        popularPosts
+        popularPosts,
+        meta: {
+            page,
+            totalPosts,
+            totalPages: Math.ceil(totalPosts / limit)
+        }
     })
 }
 
@@ -155,13 +163,23 @@ const setFavoritePost = async (req, res) => {
 }
 
 const getFaviritePosts = async (req, res) => {
+    const {page: currentPage, limit: currentLimit} = req.query;
+    const {page, limit, skip} = pagination(currentPage, currentLimit)
 const {id} = req.userId;
-const posts = await PostModel.find({favorites: id});
+const posts = await PostModel.find({favorites: id}, "", {skip, limit});
+const totalPosts = await PostModel.find({favorites: id}).count();
 if(!posts) {
     throw HttpError(404, "Постів не знайдено")
 }
 
-res.json(posts)
+res.json({
+    posts,
+    meta: {
+        page,
+        totalPosts,
+        totalPages: Math.ceil(totalPosts / limit)
+    }
+})
 }
 
 const removeFavoritePost = async (req, res) => {
@@ -178,13 +196,23 @@ res.json({
 }
 
 const getCategoryPosts = async (req, res) => {
+    const {page: currentPage, limit: currentLimit} = req.query;
+    const {page, limit, skip} = pagination(currentPage, currentLimit)
     const {category} = req.params;
-    const posts = await PostModel.find({category})
+    const posts = await PostModel.find({category}, "", {skip, limit})
+    const totalPosts = await PostModel.find({category}).count();
     if(!posts) {
         throw HttpError(404, "Постів не знайдено")
     }
     
-    res.json(posts)
+    res.json({
+        posts,
+        meta: {
+            page,
+            totalPosts,
+            totalPages: Math.ceil(totalPosts / limit)
+        }
+    })
     }
 
     const getSearchCategory = async (req, res) => {
