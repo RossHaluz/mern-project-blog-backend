@@ -64,6 +64,7 @@ const getAllPosts = async (req, res) => {
         popularPosts,
         meta: {
             page,
+            limit,
             totalPosts,
             totalPages: Math.ceil(totalPosts / limit)
         }
@@ -176,6 +177,7 @@ res.json({
     posts,
     meta: {
         page,
+        limit,
         totalPosts,
         totalPages: Math.ceil(totalPosts / limit)
     }
@@ -209,6 +211,7 @@ const getCategoryPosts = async (req, res) => {
         posts,
         meta: {
             page,
+            limit,
             totalPosts,
             totalPages: Math.ceil(totalPosts / limit)
         }
