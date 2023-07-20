@@ -52,6 +52,7 @@ res.json(uploadPostWithoutImg)
 const getAllPosts = async (req, res) => {
     const {page: currentPage, limit: currentLimit} = req.query;
     const {page, limit, skip} = pagination(currentPage, currentLimit)
+    
     const posts = await PostModel.find({}, "", {skip, limit}).sort('-createdAt');
     const totalPosts = await PostModel.find().count();
     const popularPosts = await PostModel.find().limit(5).sort('-views');
