@@ -14,14 +14,10 @@ const {id} = req.userId;
 const {title, text, category} = req.body;
 const user = await authModel.findById(id);
 if(req.file){
-    const {path: tempUpload, originalname} = req.file;
-    const filename  = `${crypto.randomUUID()}_${originalname}`
-    const resultUpload = path.join(uploadDir, filename)
-    await fs.rename(tempUpload, resultUpload)
-    // const imgUrl = path.join('image', filename)
+   const {path} = req.file;
     const uploadPostWithImage = await PostModel.create({
         username: user.username,
-        imgUrl: filename,
+        imgUrl: path,
         category,
         title,
         text,
